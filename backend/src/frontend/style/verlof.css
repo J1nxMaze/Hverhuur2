@@ -1,0 +1,64 @@
+.availability-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input[type="date"] {
+    width: calc(100% - 24px);
+    padding: 10px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.top-left {
+    float: left;
+    width: 48%;
+}
+
+.top-right {
+    float: right;
+    width: 48%;
+    text-align: right;
+}
+
+.bottom-left {
+    float: left;
+    width: 48%;
+}
+
+.bottom-right {
+    float: right;
+    width: 48%;
+    text-align: right;
+}
+
+button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #2b78e4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #1f5db2;
+}
+
+p {
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+}
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verlof Aanvragen</title>
+    <link rel="stylesheet" href="../style/verlof.css">
+</head>
+<body>
+    <div class="availability-container">
+        <h2>Verlof Aanvragen</h2>
+        <form id="availabilityForm">
+            <div class="top-left">
+            </div>
+            <div class="top-right">
+                <p>Let op! Verlof moet minimaal 3 dagen van tevoren worden ingevoerd. Als u op verlof Accepteren heeft gedrukt staat het verlof vast.</p>
+            </div>
+            <div class="bottom-left">
+                <div class="input-group">
+                    <label for="startDate">Begin Verlof:</label>
+                    <input type="date" id="startDate" name="startDate" required min="" onchange="setEndDateMin()">
+                </div>
+            </div>
+            <div class="bottom-right">
+                <div class="input-group">
+                    <label for="endDate">Eind Verlof:</label>
+                    <input type="date" id="endDate" name="endDate" required min="">
+                </div>
+            </div>
+            <button type="submit">Verzenden</button>
+        </form>
+    </div>
+
+    <script src="../build/verlof.js"></script>
+    <script>
+        function setEndDateMin() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            if (startDateInput && endDateInput) {
+                endDateInput.min = startDateInput.value;
+            }
+        }
+    </script>
+</body>
+</html>
