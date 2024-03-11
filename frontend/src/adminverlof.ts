@@ -1,31 +1,46 @@
-// Display captain availability data
-function displayCaptainAvailability(data: { name: any; unavailableDates: any[]; }[]) {
-    // Example: display captain availability data in a table
-    const table = document.createElement('table');
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Unavailable Dates</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${data.map((item: { name: any; unavailableDates: any[]; }) => `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>${item.unavailableDates.join(', ')}</td>
-                </tr>
-            `).join('')}
-        </tbody>
-    `;
+// Get the container element to display leave requests
+const leaveRequestsContainer = document.getElementById('leaveRequests');
 
-    // Get the container element, and append the table only if the container exists
-    document.querySelector('.admin-availability-container')?.appendChild(table);
+// Check if the container element exists
+if (leaveRequestsContainer) {
+    // Fetch leave requests from the backend
+    fetch('/admin/leave-requests')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch leave requests');
+            }
+            return response.json();
+        })
+        .then(leaveRequests => {
+            console.log('Leave requests:', leaveRequests); // Log the leave requests to the console
+            // Render leave requests in the container
+            leaveRequestsContainer.innerHTML = renderLeaveRequests(leaveRequests);
+        })
+        .catch(error => {
+            console.error('Error fetching leave requests:', error); // Log the error to the console
+            // Display error message on failure
+            leaveRequestsContainer.innerHTML = '<p>Error fetching leave requests</p>';
+        });
+} else {
+    console.error('Element with ID "leaveRequests" not found'); // Log error if container element not found
 }
 
-// Call the fetchCaptainAvailability function when the page loads
-window.addEventListener('load', fetchCaptainAvailability);
-function fetchCaptainAvailability(this: Window, ev: Event) {
-    throw new Error("Function not implemented.");
-}
+// Function to render leave requests as HTML
+function renderLeaveRequests(leaveRequests: any[]) {
+    if (!leaveRequests || leaveRequests.length === 0) {
+        return '<p>No leave requests found</p>';
+    }
 
+    // Generate HTML for leave requests
+    const html = leaveRequests.map(request => {
+        return `
+            <div class="leave-request">
+                <div><strong>Captain Email:</strong> ${request.Captain_Email}</div>
+                <div><strong>Start Date:</strong> ${request.Start_Date}</div>
+                <div><strong>End Date:</strong> ${request.End_Date}</div>
+            </div>
+        `;
+    }).join('');
+
+    return html;
+}
