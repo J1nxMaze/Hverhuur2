@@ -1,10 +1,9 @@
- import { config } from 'dotenv';
+import { config } from 'dotenv';
 import mysql2 from 'mysql2';
- 
+
 config();
- 
-// Create the connection pool. The pool-specific settings are the defaults
-// wachtwoord moet nog ingevuld worden door de gebruiker zelf!
+
+// Create the connection pool
 export const pool = mysql2.createPool({
   host: process.env.DB_HOST || '',
   user: process.env.DB_USER || '',
