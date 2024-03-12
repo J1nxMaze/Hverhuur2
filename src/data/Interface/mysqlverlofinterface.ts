@@ -1,38 +1,56 @@
-import { businessmodel } from "../../business/model/verlofModel";
-import { mysqlData } from "../models/verlofModel";
-import { VerlofInterface } from "./verlofInterface";
+import { Verlof } from "../business/model/verlofModel";
+import { pool } from "../../util/database";
+import { RowDataPacket } from "mysql2";
 
-export class MysqlVerlofInterface implements VerlofInterface {
+export class MysqlVerlofInterface {
 
-    private verlof!: mysqlData.Verlof;
-    
-    public constructor() {
-        this.verlof = new mysqlData.Verlof();
+    public async readVerlofByCaptainEmail(captainEmail: string): Promise<Verlof | null> {
+        try {
+            const query = 'SELECT * FROM `Verlof` WHERE Captain_Email = ?';
+            const [rows] = await pool.promise().query<RowDataPacket[]>(query, [captainEmail]);
+            
+            if (rows && rows.length > 0) {
+                const verlofData = rows[0];
+                const verlof = new Verlof(verlofData.id, verlofData.start_date, verlofData.end_date, verlofData.timestamp, verlofData.captain_email);
+                return verlof;
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('Error reading Verlof by Captain Email:', error);
+            throw error;
+        }
     }
 
-    createVerlof(): string {
-        throw new Error("Method not implemented.");
+    public async createVerlof(verlof: Verlof): Promise<void> {
+        try {
+            const query = 'INSERT INTO `Verlof` (start_date, end_date, timestamp, captain_email) VALUES (?, ?, ?, ?)';
+            await pool.promise().query(query, [verlof.start_date, verlof.end_date, verlof.timestamp, verlof.captain_email]);
+        } catch (error) {
+            console.error('Error creating Verlof:', error);
+            throw error;
+        }
     }
 
-    /**
-     * Retrieves Verlof by captain's email
-     * @param captainEmail - Email of the captain
-     * @returns Verlof object if found, otherwise null
-     */
-    public async readVerlofByCaptainEmail(captainEmail: string): Promise<businessmodel.Verlof | null> {
-        let returnValue: businessmodel.Verlof | null = null;
-        returnValue = await this.verlof.getVerlofByCaptainEmail(captainEmail).then((result: businessmodel.Verlof | null) => {
-            return result;
-        });
-        return returnValue;
+    public async updateVerlof(verlof: Verlof): Promise<void> {
+        try {
+            const query = 'UPDATE `Verlof` SET start_date = ?, end_date = ?, timestamp = ? WHERE id = ?';
+            await pool.promise().query(query, [verlof.start_date, verlof.end_date, verlof.timestamp, verlof.id]);
+        } catch (error) {
+            console.error('Error updating Verlof:', error);
+            throw error;
+        }
     }
 
-    updateVerlof(): void {
-        throw new Error("Method not implemented.");
+    public async deleteVerlof(id: string): Promise<void> {
+        try {
+            const query = 'DELETE FROM `Verlof` WHERE id = ?';
+            await pool.promise().query(query, [id]);
+        } catch (error) {
+            console.error('Error deleting Verlof:', error);
+            throw error;
+        }
     }
 
-    deleteVerlof(): void {
-        throw new Error("Method not implemented.");
-    }
-
+    // You can implement other methods similarly
 }
