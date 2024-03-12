@@ -1,46 +1,34 @@
-// Get the container element to display leave requests
-const leaveRequestsContainer = document.getElementById('leaveRequests');
-
-// Check if the container element exists
-if (leaveRequestsContainer) {
-    // Fetch leave requests from the backend
-    fetch('/admin/leave-requests')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch leave requests');
-            }
-            return response.json();
-        })
-        .then(leaveRequests => {
-            console.log('Leave requests:', leaveRequests); // Log the leave requests to the console
-            // Render leave requests in the container
-            leaveRequestsContainer.innerHTML = renderLeaveRequests(leaveRequests);
-        })
-        .catch(error => {
-            console.error('Error fetching leave requests:', error); // Log the error to the console
-            // Display error message on failure
-            leaveRequestsContainer.innerHTML = '<p>Error fetching leave requests</p>';
-        });
-} else {
-    console.error('Element with ID "leaveRequests" not found'); // Log error if container element not found
-}
-
-// Function to render leave requests as HTML
-function renderLeaveRequests(leaveRequests: any[]) {
-    if (!leaveRequests || leaveRequests.length === 0) {
-        return '<p>No leave requests found</p>';
+window.addEventListener('load', async () => {
+    const leaveRequestsContainer = document.getElementById('leaveRequests');
+    if (!leaveRequestsContainer) {
+        console.error('Leave requests container not found');
+        return;
     }
 
-    // Generate HTML for leave requests
-    const html = leaveRequests.map(request => {
-        return `
-            <div class="leave-request">
-                <div><strong>Captain Email:</strong> ${request.Captain_Email}</div>
-                <div><strong>Start Date:</strong> ${request.Start_Date}</div>
-                <div><strong>End Date:</strong> ${request.End_Date}</div>
-            </div>
-        `;
-    }).join('');
+    try {
+        const response = await fetch('http://localhost:4001/api/verlof', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Failed to fetch leave requests');
+        }
+        const leaveRequests = await response.json();
+        renderLeaveRequests(leaveRequests);
+    } catch (error) {
+        console.error('Error fetching leave requests:', error);
+    }
+});
 
-    return html;
+function renderLeaveRequests(leaveRequests: any[]) {
+    const leaveRequestsContainer = document.getElementById('leaveRequests');
+    if (!leaveRequestsContainer) return;
+
+    leaveRequests.forEach(request => {
+        const requestElement = document.createElement('div');
+        requestElement.textContent = `Start Date: ${request.startDate}, End Date: ${request.endDate}`;
+        leaveRequestsContainer.appendChild(requestElement);
+    });
 }

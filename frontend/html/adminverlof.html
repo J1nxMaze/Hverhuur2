@@ -4,11 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>verlofregling</title>
-    <link rel="stylesheet" href="adminverlof.css">
+    <link rel="stylesheet" href="../style/adminverlof.css">
 </head>
 <body>
     <h1>Verlof regeling</h1>
     <div id="leaveRequests"></div>
-    <script src="adminverlof.js"></script>
+    <script src="../build/adminverlof.js"></script>
+    <script>
+        // Fetch leave requests from the backend
+        fetch('/verlof') // Assuming this is the endpoint to fetch leave requests
+            .then(response => response.json())
+            .then(data => {
+                // Once data is fetched, generate HTML to display leave requests
+                const leaveRequestsDiv = document.getElementById('leaveRequests');
+                data.forEach(request => {
+                    const requestElement = document.createElement('div');
+                    requestElement.textContent = `Captain Email: ${request.captainEmail}, Start Date: ${request.startDate}, End Date: ${request.endDate}`;
+                    leaveRequestsDiv.appendChild(requestElement);
+                });
+            })
+            .catch(error => console.error('Error fetching leave requests:', error));
+    </script>
 </body>
 </html>
